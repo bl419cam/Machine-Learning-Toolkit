@@ -69,3 +69,35 @@ def onehotencode_train_test(train, test, keep_index=False):
         test_all.index = test_ind
     
     return train_all, test_all
+
+def plot_confusion_matrix(y_true, y_pred, model_name='', cmap=plt.cm.Blues):
+    """
+    plot confusion matrix for array of true labels and array of predictions from 
+    a classifier model
+    """
+    #initialize confusion matrix
+    cm = metrics.confusion_matrix(y_true, y_pred)
+    cm_norm = metrics.confusion_matrix(y_true, y_pred, normalize='true')
+
+    #turn off gridlines (if any)
+    plt.grid(b=None)
+    #plot basic matrix
+    plt.imshow(cm_norm, cmap=cmap)
+
+    #add title and axis labels
+    plt.title('Confusion Matrix {}'.format(model_name))
+    plt.xlabel('Predictions')
+    plt.ylabel('True Labels')
+
+    #add axis scale and markers
+    class_names = set(np.unique(y_true))
+    tick_marks = np.arange(len(class_names))
+    plt.xticks(tick_marks, class_names, rotation=45, fontsize=12)
+    plt.yticks(tick_marks, class_names, fontsize=12)
+
+    #format matrix
+    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+        plt.text(j, i, cm[i,j], horizontalalignment='center', fontdict={'size':12},
+                    color='white' if cm_norm[i,j] > 0.5 else 'black')
+
+    
