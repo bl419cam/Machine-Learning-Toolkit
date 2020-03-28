@@ -100,4 +100,24 @@ def plot_confusion_matrix(y_true, y_pred, model_name='', cmap=plt.cm.Blues):
         plt.text(j, i, cm[i,j], horizontalalignment='center', fontdict={'size':12},
                     color='white' if cm_norm[i,j] > 0.5 else 'black')
 
-    
+def plot_train_test_roc_curve(y_test, y_test_score, y_train, y_train_score, 
+                    clf_name='Binary Classifier'):
+    """
+    plot roc curve for training and test sets on the same graph
+    """
+    plt.style.use('ggplot')
+    colors = sns.color_palette('Set2')
+
+    fpr_test, tpr_test, thresholds_test = metrics.roc_curve(y_test, y_test_score)
+    fpr_train, tpr_train, thresholds_train = metrics.roc_curve(y_train, y_train_score)
+
+    plot.figure(figsize=(8,6))
+    plt.plot([0,1], [0,1], linestyle='--', label=='random')
+    plt.plot(fpr_train, tpr_train, color=colors[1], marker='.', label='train set')
+    plt.plot(fpr_test, tpr_test, color=colors[0], marker='.', label='test set')
+    plt.title('ROC Curve - {}'.format(clf_name))
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate (Recall)')
+    plt.legend(loc='lower right')
+
+    return plt
