@@ -121,3 +121,29 @@ def plot_train_test_roc_curve(y_test, y_test_score, y_train, y_train_score,
     plt.legend(loc='lower right')
 
     return plt
+
+def plot_train_test_precision_recall_curve(y_test, y_test_score, y_train, y_train_score, 
+                    clf_name='Binary Classifier'):
+    """
+    plot precision-recall curve for training and test sets on the same graph
+    """
+    plt.style.use('ggplot')
+    colors = sns.color_palette('Set2')
+
+    pr_test, rc_test, thresholds_test = metrics.precision_recall_curve(y_test, y_test_score)
+    pr_train, rc_train, thresholds_train = metrics.precision_recall_curve(y_train, y_train_score)
+
+    imb_test = sum(y_test==1)/len(y_test)
+    imb_train = sum(y_train==1)/len(y_train)
+    imb_avg = (imb_test + imb_train)/2
+
+    plt.figure(figsize(8,6))
+    plt.plot([0,1], [imb_avg, imb_avg], linestyle='--', label='random')
+    plt.plot(rc_train, pr_train, color=colors[1], marker='.', label='train set')
+    plt.plot(rc_test, pr_test, color=colors[0], marker='.', label='test set')
+    plt.title('Precision-Recall Curve - {}'.format(clf_name))
+    plt.xlabel('Recall (True Positive Rate')
+    plt.ylabel('Precision')
+    plt.legend()
+
+    return plt
