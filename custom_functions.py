@@ -147,3 +147,18 @@ def plot_train_test_precision_recall_curve(y_test, y_test_score, y_train, y_trai
     plt.legend()
 
     return plt
+
+def find_threshold_by_recall(y_labels, y_score, recall):
+    
+    fpr, tpr, thresholds = metrics.roc_curve(y_labels, y_score)
+    ix = np.where(np.logical_and(tpr>=recall, tpr<(recall+0.1)))[0][0]
+
+    return thresholds[ix]
+
+def find_kstat(y_labels, y_score):
+
+    fpr, tpr, thresholds = metrics.roc_curve(y_labels, y_score)
+    kstat = max(tpr-fpr)
+    kstat_thresh = threshoolds[np.argmax(tpr-fpr)]
+
+    return kstat, kstat_thresh
