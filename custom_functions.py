@@ -112,7 +112,7 @@ def plot_train_test_roc_curve(y_test, y_test_score, y_train, y_train_score,
     fpr_train, tpr_train, thresholds_train = metrics.roc_curve(y_train, y_train_score)
 
     plot.figure(figsize=(8,6))
-    plt.plot([0,1], [0,1], linestyle='--', label=='random')
+    plt.plot([0,1], [0,1], linestyle='--', label='random')
     plt.plot(fpr_train, tpr_train, color=colors[1], marker='.', label='train set')
     plt.plot(fpr_test, tpr_test, color=colors[0], marker='.', label='test set')
     plt.title('ROC Curve - {}'.format(clf_name))
@@ -162,3 +162,26 @@ def find_kstat(y_labels, y_score):
     kstat_thresh = threshoolds[np.argmax(tpr-fpr)]
 
     return kstat, kstat_thresh
+
+def display_result_summary(y_test, y_test_score, y_train, y_train_score, 
+                            model_name='Trained Classifier'):
+
+    train_auc = metrics.roc_auc_score(y_train, y_train_score)
+    train_ar = 2*train_auc-1
+    train_ks, train_ks_thresh = find_kstat(y_train, y_train_score)
+
+    test_auc = metrics.roc_auc_score(y_test, y_test_score)
+    test_ar = 2*test_auc-1
+    test_ks, test_ks_thresh = find_kstat(y_test, y_test_score)
+
+    print('Model Results - {}'.format(model_name))
+    print('')
+    print('+-------------------------------------------+')
+    print('|   Metric   |   Test Set   |   Train Set   |')
+    print('+-------------------------------------------+')
+    print('|  AUC Score |   {.5f}   |   {.5f}   |'.format(test_auc, train_auc))
+    print('+-------------------------------------------+')
+    print('|  AR Score  |   {.5f}   |   {.5f}   |'.format(test_ar, train_ar))
+    print('+-------------------------------------------+')
+    print('|  KS Stat   |   {.5f}   |   {.5f}   |'.format(test_ks, train_ks))
+    print('+-------------------------------------------+')
