@@ -185,3 +185,16 @@ def display_result_summary(y_test, y_test_score, y_train, y_train_score,
     print('+-------------------------------------------+')
     print('|  KS Stat   |   {.5f}   |   {.5f}   |'.format(test_ks, train_ks))
     print('+-------------------------------------------+')
+
+def find_divergence(y_labels, y_score):
+    """
+    Find divergence of a binary classifier, with labels 0 and 1
+    """
+
+    y_true = np.array(y_labels)
+    y_score1 = y_score[np.where(y_true>0)[0]]
+    y_score0 = y_score[np.where(y_true==0)[0]]
+    
+    div = (np.mean(y_score1)-np.mean(y_score2))**2/(np.var(y_score1)+np.var(y_score0))
+
+    return div
