@@ -100,6 +100,25 @@ def plot_confusion_matrix(y_true, y_pred, model_name='', cmap=plt.cm.Blues):
         plt.text(j, i, cm[i,j], horizontalalignment='center', fontdict={'size':12},
                     color='white' if cm_norm[i,j] > 0.5 else 'black')
 
+def plot_roc_curve(y_labels, y_score, clf_name='Binary Classifier'):
+    """
+    plot roc curve for one set of true labels and prediciton scores for a binary classifier
+    """
+    plt.style.use('ggplot')
+    #colors = sns.color_palette('Set2')
+
+    fpr, tpr, thresholds = metrics.roc_curve(y_labels, y_score)
+
+    plt.figure(figsize=(8,6))
+    plt.plot([0,1], [0,1], linestyle='--', label='random')
+    plt.plot(fpr, tpr, marker='.')
+    plt.title('ROC Curve - {}'.format(clf_name))
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.legend(loc='lower right')
+
+    return plt
+
 def plot_train_test_roc_curve(y_test, y_test_score, y_train, y_train_score, 
                     clf_name='Binary Classifier'):
     """
@@ -111,7 +130,7 @@ def plot_train_test_roc_curve(y_test, y_test_score, y_train, y_train_score,
     fpr_test, tpr_test, thresholds_test = metrics.roc_curve(y_test, y_test_score)
     fpr_train, tpr_train, thresholds_train = metrics.roc_curve(y_train, y_train_score)
 
-    plot.figure(figsize=(8,6))
+    plt.figure(figsize=(8,6))
     plt.plot([0,1], [0,1], linestyle='--', label='random')
     plt.plot(fpr_train, tpr_train, color=colors[1], marker='.', label='train set')
     plt.plot(fpr_test, tpr_test, color=colors[0], marker='.', label='test set')
@@ -137,7 +156,7 @@ def plot_train_test_precision_recall_curve(y_test, y_test_score, y_train, y_trai
     imb_train = sum(y_train==1)/len(y_train)
     imb_avg = (imb_test + imb_train)/2
 
-    plt.figure(figsize(8,6))
+    plt.figure(figsize=(8,6))
     plt.plot([0,1], [imb_avg, imb_avg], linestyle='--', label='random')
     plt.plot(rc_train, pr_train, color=colors[1], marker='.', label='train set')
     plt.plot(rc_test, pr_test, color=colors[0], marker='.', label='test set')
@@ -195,6 +214,6 @@ def find_divergence(y_labels, y_score):
     y_score1 = y_score[np.where(y_true>0)[0]]
     y_score0 = y_score[np.where(y_true==0)[0]]
     
-    div = (np.mean(y_score1)-np.mean(y_score2))**2/(np.var(y_score1)+np.var(y_score0))
+    div = (np.mean(y_score1)-np.mean(y_score0))**2/(np.var(y_score1)+np.var(y_score0))
 
     return div
