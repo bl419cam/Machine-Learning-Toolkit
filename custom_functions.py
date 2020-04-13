@@ -141,6 +141,27 @@ def plot_train_test_roc_curve(y_test, y_test_score, y_train, y_train_score,
 
     return plt
 
+def plot_precision_recall_curve(y_labels, y_score, clf_name='Binary Classifier'):
+    """
+    plot precision-recall curve for set of binary labels and prediction scores
+    """
+    plt.style.use('ggplot')
+    colors = sns.color_palette('Set2')
+
+    pr, rc, thresholds = metrics.precision_recall_curve(y_labels, y_score)
+
+    imb = sum(y_labels==1)/len(y_labels)
+
+    plt.figure(figsize=(8,6))
+    plt.plot([0,1], [imb,imb], linestyle='--', label='random')
+    plt.plot(rc, pr, color=colors[1], marker='.')
+    plt.title('Precision-Recall Curve - {}'.format(clf_name))
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.legend()
+
+    return plt
+
 def plot_train_test_precision_recall_curve(y_test, y_test_score, y_train, y_train_score, 
                     clf_name='Binary Classifier'):
     """
@@ -161,7 +182,7 @@ def plot_train_test_precision_recall_curve(y_test, y_test_score, y_train, y_trai
     plt.plot(rc_train, pr_train, color=colors[1], marker='.', label='train set')
     plt.plot(rc_test, pr_test, color=colors[0], marker='.', label='test set')
     plt.title('Precision-Recall Curve - {}'.format(clf_name))
-    plt.xlabel('Recall (True Positive Rate')
+    plt.xlabel('Recall (True Positive Rate)')
     plt.ylabel('Precision')
     plt.legend()
 
@@ -178,7 +199,7 @@ def find_kstat(y_labels, y_score):
 
     fpr, tpr, thresholds = metrics.roc_curve(y_labels, y_score)
     kstat = max(tpr-fpr)
-    kstat_thresh = threshoolds[np.argmax(tpr-fpr)]
+    kstat_thresh = thresholds[np.argmax(tpr-fpr)]
 
     return kstat, kstat_thresh
 
@@ -198,11 +219,11 @@ def display_result_summary(y_test, y_test_score, y_train, y_train_score,
     print('+-------------------------------------------+')
     print('|   Metric   |   Test Set   |   Train Set   |')
     print('+-------------------------------------------+')
-    print('|  AUC Score |   {.5f}   |   {.5f}   |'.format(test_auc, train_auc))
+    print('|  AUC Score |   {:.5f}   |   {:.5f}   |'.format(test_auc, train_auc))
     print('+-------------------------------------------+')
-    print('|  AR Score  |   {.5f}   |   {.5f}   |'.format(test_ar, train_ar))
+    print('|  AR Score  |   {:.5f}   |   {:.5f}   |'.format(test_ar, train_ar))
     print('+-------------------------------------------+')
-    print('|  KS Stat   |   {.5f}   |   {.5f}   |'.format(test_ks, train_ks))
+    print('|  KS Stat   |   {:.5f}   |   {:.5f}   |'.format(test_ks, train_ks))
     print('+-------------------------------------------+')
 
 def find_divergence(y_labels, y_score):
